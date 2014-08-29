@@ -6,10 +6,13 @@ import (
 	"math"
 	"math/rand"
 	"strconv"
+	"time"
 )
 
 func ssa(leapMethod string, leapOption float64, rxnVectors *[][]int, rxnsK *[]float64, initPop *[]int, dur float64, outputDeltaT float64, outputFile *csv.Writer) (population []int, rxns []int) {
 	//TODO: handle io.Writer as well as csv.Writer
+	rng := rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
+
 	if leapMethod != "classic" {
 		log.Fatalf("Leap method	%s not supported", leapMethod)
 	}
@@ -30,7 +33,7 @@ func ssa(leapMethod string, leapOption float64, rxnVectors *[][]int, rxnsK *[]fl
 	for t <= dur {
 		switch leapMethod {
 		case "classic":
-			tau, rxnsDelta = classicLeap(*rxnVectors, *rxnsK, currentPop)
+			tau, rxnsDelta = classicLeap(*rxnVectors, *rxnsK, currentPop, rng)
 		}
 		if tau+t >= lastOutputTime+outputDeltaT {
 			lastOutputTime += outputDeltaT
@@ -79,7 +82,11 @@ func getPopulation(initPop []int, rxnVectors [][]int, rxns []int) []int {
 	return pop
 }
 
-func classicLeap(rxnVectors [][]int, rxnsK []float64, pop []int) (tau float64, rxnsDelta []int) {
+type randomSource interface {
+	Float64() float64
+}
+
+func classicLeap(rxnVectors [][]int, rxnsK []float64, pop []int, rng randomSource) (tau float64, rxnsDelta []int) {
 	rxnsDelta = make([]int, len(rxnsK))
 	propensities := make([]float64, len(rxnsK))
 	for i := range propensities {
@@ -97,21 +104,21 @@ func classicLeap(rxnVectors [][]int, rxnsK []float64, pop []int) (tau float64, r
 	}
 
 	// Draw two random numbers
-	r1 := rand.Float64()
-	r2 := rand.Float64()
+	r1 := rng.Float64()
+	r2 := rng.Float64()
 
 	// Determine tau
-	tau = 1 / propSum * math.Log(1/r1)
+	tau = 1.0 / propSum * math.Log(1.0/r1)
 
 	// Determine reaction
-	var rxn int
+	rxn := len(propensities)
 	var propCum float64
 	for i, v := range propensities {
+		propCum += v
 		if r2*propSum <= propCum {
 			rxn = i
 			break
 		}
-		propCum += v
 	}
 	rxnsDelta = rxnVectors[rxn]
 	return
