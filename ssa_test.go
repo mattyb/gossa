@@ -17,6 +17,13 @@ var populationTests = []struct {
 		[]int{5},
 		[]int{0, 5},
 	},
+	{
+		[]int{3, 5, 0},
+		[][]int{{-1, 1, 0},
+			{0, -1, 1}},
+		[]int{1, 3},
+		[]int{2, 3, 3},
+	},
 }
 
 func TestGetPopulation(t *testing.T) {
@@ -70,6 +77,17 @@ var leapTests = []struct {
 		1.0 / E,
 		0.75,
 		0.5,
+		1,
+	},
+	{
+		"Pick second if first impossible",
+		[]int{0, 5},
+		[][]int{{-1, 1},
+			{1, -1}},
+		[]float64{.2, .2},
+		1.0 / E,
+		0.25,
+		1,
 		1,
 	},
 }

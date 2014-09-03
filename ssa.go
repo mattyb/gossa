@@ -55,7 +55,7 @@ func Ssa(leapMethod string, leapOption float64, rxnVectors *[][]int, rxnsK *[]fl
 
 func writeOutput(f *csv.Writer, t float64, pop *[]int) {
 	vals := make([]string, len(*pop)+1)
-	//TODO: automatically set t format)
+	//TODO: automatically set t format
 	vals[0] = strconv.FormatFloat(t, 'f', 5, 64)
 	for i, v := range *pop {
 		vals[i+1] = strconv.Itoa(v)
