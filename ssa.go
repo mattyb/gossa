@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func ssa(leapMethod string, leapOption float64, rxnVectors *[][]int, rxnsK *[]float64, initPop *[]int, dur float64, outputDeltaT float64, outputFile *csv.Writer) (population []int, rxns []int) {
+func Ssa(leapMethod string, leapOption float64, rxnVectors *[][]int, rxnsK *[]float64, initPop *[]int, dur float64, outputDeltaT float64, outputFile *csv.Writer) (population []int, rxns []int) {
 	//TODO: handle io.Writer as well as csv.Writer
 	rng := rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
 
