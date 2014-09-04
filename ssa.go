@@ -11,7 +11,12 @@ import (
 
 func Ssa(leapMethod string, leapOption float64, rxnVectors *[][]int, rxnsK *[]float64, initPop *[]int, dur float64, outputDeltaT float64, outputFile *csv.Writer, seed int64) (currentPop []int, rxns []int) {
 	//TODO: handle io.Writer as well as csv.Writer
-	rng := rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
+	var rng *rand.Rand
+	if seed == 0 {
+		rng = rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
+	} else {
+		rng = rand.New(rand.NewSource(seed))
+	}
 
 	if leapMethod != "classic" {
 		log.Fatalf("Leap method	%s not supported", leapMethod)
@@ -28,11 +33,6 @@ func Ssa(leapMethod string, leapOption float64, rxnVectors *[][]int, rxnsK *[]fl
 		writeOutput(outputFile, t, &currentPop)
 	}
 
-	if seed == 0 {
-		log.Printf("WARNING: Using seed 0")
-	} else {
-		rand.Seed(seed)
-	}
 	for t <= dur {
 		switch leapMethod {
 		case "classic":
