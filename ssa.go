@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func Ssa(leapMethod string, leapOption float64, rxnVectors *[][]int, rxnsK *[]float64, initPop *[]int, dur float64, outputDeltaT float64, outputFile *csv.Writer) (population []int, rxns []int) {
+func Ssa(leapMethod string, leapOption float64, rxnVectors *[][]int, rxnsK *[]float64, initPop *[]int, dur float64, outputDeltaT float64, outputFile *csv.Writer, seed int64) (currentPop []int, rxns []int) {
 	//TODO: handle io.Writer as well as csv.Writer
 	rng := rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
 
@@ -19,7 +19,7 @@ func Ssa(leapMethod string, leapOption float64, rxnVectors *[][]int, rxnsK *[]fl
 	t := float64(0)
 	tau := float64(0.0)
 	lastOutputTime := float64(0)
-	currentPop := make([]int, len(*initPop))
+	currentPop = make([]int, len(*initPop))
 	rxns = make([]int, len(*rxnVectors))
 	rxnsDelta := make([]int, len(*rxnVectors))
 	copy(currentPop, *initPop)
@@ -28,8 +28,11 @@ func Ssa(leapMethod string, leapOption float64, rxnVectors *[][]int, rxnsK *[]fl
 		writeOutput(outputFile, t, &currentPop)
 	}
 
-	//TODO: pseudorandom seed
-	rand.Seed(5)
+	if seed == 0 {
+		log.Printf("WARNING: Using seed 0")
+	} else {
+		rand.Seed(seed)
+	}
 	for t <= dur {
 		switch leapMethod {
 		case "classic":
