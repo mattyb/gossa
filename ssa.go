@@ -120,6 +120,6 @@ func classicLeap(rxnVectors [][]int, rxnsK []float64, pop []int, rng randomSourc
 			break
 		}
 	}
-	rxnsDelta = rxnVectors[rxn]
+	rxnsDelta[rxn] = 1
 	return
 }

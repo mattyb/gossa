@@ -107,7 +107,7 @@ func TestClassicLeap(t *testing.T) {
 
 		//Should have the right reactions
 		for j, v := range rxnsDelta {
-			if v != test.rxnVectors[test.expectedRxn][j] {
+			if (j == test.expectedRxn && v == 0) || (j != test.expectedRxn && v == 1) {
 				t.Errorf("Failed leap test (%s). Rxn Delta %v does not equal that of expected reaction %d (%v).", test.name, rxnsDelta, test.expectedRxn, test.rxnVectors[test.expectedRxn])
 			}
 		}
